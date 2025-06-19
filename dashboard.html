@@ -1,0 +1,7 @@
+<button onclick="logout()">Выйти</button>
+<script>
+  function logout() {
+    localStorage.setItem("loggedIn", "false");
+    window.location.href = "login.html";
+  }
+</script>
