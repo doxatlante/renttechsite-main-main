@@ -11,13 +11,16 @@
 <body>
   <div class="form-wrapper">
     <div class="form-box">
-      <h2>Регистрация в RentTech</h2>
-      <form action="register.php" method="POST">
-        <input type="text" name="username" placeholder="Имя" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Пароль" required><br>
-        <button type="submit">Зарегистрироваться</button>
-      </form>
+      <h2>Регистрация <a href="index.php"><span>RentTech</span></a></h2>
+
+ <form action="register.php" method="POST">
+  <input type="text" name="name" placeholder="Имя" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="password" name="password" placeholder="Пароль" required>
+  <input type="password" name="confirmPassword" placeholder="Подтвердите пароль" required>
+  <button type="submit">Зарегистрироваться</button>
+</form>
+
       <p class="error-message" id="errorMessage"></p>
       <p class="link-text">Уже есть аккаунт? <a href="login.html">Войти</a></p>
       </form>

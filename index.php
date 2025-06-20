@@ -17,13 +17,30 @@
                     <img src="loggo1.png" alt="Магазин" class="logo_img">
                 </a>
                 <ul class="nav_links">
-                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="index.php">Главная</a></li>
                     <li><a href="#about">О нас</a></li>
                     <li><a href="#reviews">Отзывы</a></li>
                     <li><a href="#delivery">Доставка</a></li>
                     <li><a href="#contacts">Контакты</a></li>
-                    <li><a href="products.html">Товары</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="products.php">Каталог</a></li>
+                    <?php
+session_start();
+require_once 'db.php'; // подключи при необходимости
+?>
+
+<?php if (isset($_SESSION['user_id'])): 
+    // Получаем имя пользователя
+    $stmt = $pdo->prepare("SELECT username, role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    $username = htmlspecialchars($user['username']);
+    $role = $user['role'];
+    $cabinetLink = ($role === 'admin') ? 'admin-panel.php' : 'user-profile.php';
+?>
+    <li><a href="<?= $cabinetLink ?>"><?= $username ?></a></li>
+<?php else: ?>
+    <li><a href="login.html">Вход</a></li>
+<?php endif; ?>
 
                 </ul>
             </div>
@@ -337,12 +354,3 @@
         </div>
     </div>
 </footer>
-
-
-
-
-
-
-
-
-
