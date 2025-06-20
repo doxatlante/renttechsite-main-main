@@ -107,7 +107,7 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll();
   <?php elseif (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
     <a href="user-profile.php">Личный кабинет</a>
   <?php else: ?>
-    <a href="login.php">Войти</a>
+    <a href="login.html">Войти</a>
   <?php endif; ?>
 </nav>
 

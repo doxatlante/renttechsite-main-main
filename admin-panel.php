@@ -8,11 +8,22 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 // === Удаление товара ===
+// === Удаление товара (с обработкой внешнего ключа) ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_product_id'])) {
     $productId = $_POST['delete_product_id'];
-    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->execute([$productId]);
+    try {
+        $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+        $stmt->execute([$productId]);
+        $deleteMessage = "✅ Товар успешно удалён.";
+    } catch (PDOException $e) {
+        if ($e->getCode() === '23000') {
+            $deleteMessage = "❌ Нельзя удалить товар: он связан с заказами.";
+        } else {
+            $deleteMessage = "⚠️ Ошибка при удалении товара: " . $e->getMessage();
+        }
+    }
 }
+
 
 // === Добавление товара ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
@@ -115,20 +126,28 @@ $orders = $pdo->query("
   </form>
 
   <h3>Список товаров</h3>
-  <div class="product-list">
-    <?php foreach ($products as $product): ?>
-      <div class="product-item">
-        <div>
-          <strong><?= htmlspecialchars($product['title']) ?></strong><br>
-          <?= htmlspecialchars($product['price']) ?>₽
-        </div>
-        <form method="post" onsubmit="return confirm('Удалить этот товар?');">
-          <input type="hidden" name="delete_product_id" value="<?= $product['id'] ?>">
-          <button type="submit">Удалить</button>
-        </form>
+
+<?php if (isset($deleteMessage)): ?>
+  <p style="color: <?= str_starts_with($deleteMessage, '✅') ? 'green' : 'red' ?>;">
+    <?= $deleteMessage ?>
+  </p>
+<?php endif; ?>
+
+<div class="product-list">
+  <?php foreach ($products as $product): ?>
+    <div class="product-item">
+      <div>
+        <strong><?= htmlspecialchars($product['title']) ?></strong><br>
+        <?= htmlspecialchars($product['price']) ?>₽
       </div>
-    <?php endforeach; ?>
-  </div>
+      <form method="post" onsubmit="return confirm('Удалить этот товар?');">
+        <input type="hidden" name="delete_product_id" value="<?= $product['id'] ?>">
+        <button type="submit">Удалить</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+</div>
+
 
   <h3>Заказы</h3>
   <div class="order-list">
